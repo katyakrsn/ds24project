@@ -584,40 +584,22 @@ class QueryHandler(Handler):
         super().__init__()
 
     def getById(self, id_to_search: str): #Ekaterina/Rubens
-        endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
-        id_query = f"""
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX schema: <https://schema.org/>
+        endpoint = self.blazegraph_endpoint
+        id_author_query = f"""
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX schema: <https://schema.org/>
 
-            SELECT ?entity_label
-            WHERE {{
-                {{
-                    ?entity schema:identifier "{id_to_search}" .
-                    OPTIONAL {{
-                        ?entity rdf:type schema:CreativeWork .
-                        ?entity schema:name ?entity_label
-                    }}
-                }}
-                UNION
-                {{
-                    ?entity schema:identifier "{id_to_search}" .
-                    OPTIONAL {{
-                        ?entity schema:creator ?Author .
-                        ?Author rdfs:label ?entity_label 
-                    }}
-                }}
-                UNION
-                {{
-                    ?entity schema:identifier "{id_to_search}" .
-                    OPTIONAL {{
-                        ?entity schema:creator ?Author .
-                        ?Author schema:identifier ?entity_label
-                    }}
-                }}
-            }}           
-                            """
-        df_sparql = get(endpoint, id_query, True)
+        SELECT ?identifier ?name ?title
+        WHERE {{
+            ?entity schema:identifier "{input_id}" .
+            ?entity schema:creator ?Author .
+            ?Author rdfs:label ?name .
+            ?Author schema:identifier ?identifier .
+            ?entity schema:name ?title
+        }}
+        """
+        df_sparql = get(endpoint, id_author_query, True)
         return df_sparql
 
 class MetadataQueryHandler(QueryHandler):
@@ -625,7 +607,7 @@ class MetadataQueryHandler(QueryHandler):
         self.blazegraph_endpoint = blazegraph_endpoint
         self.csv_file_path = file_path_csv
 
-    def getAllPeople(self) -> pd.DataFrame: #Ekaterina
+    def getAllPeople(self) -> pd.DataFrame: #Rubens
         sparql_query = """
         PREFIX schema: <https://schema.org/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -678,7 +660,7 @@ class MetadataQueryHandler(QueryHandler):
         df_sparql = get(endpoint, cultural_object_query, True)
         return df_sparql
 
-    def getAuthorsOfCulturalHeritageObject(self, input_id) -> pd.DataFrame: #Ekaterina
+    def getAuthorsOfCulturalHeritageObject(self, input_id) -> pd.DataFrame: #Rubens
         endpoint = self.blazegraph_endpoint
         id_author_query = f"""
         PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -696,7 +678,7 @@ class MetadataQueryHandler(QueryHandler):
         df_sparql = get(endpoint, id_author_query, True)
         return df_sparql
 
-    def getCulturalHeritageObjectsAuthoredBy(self, input_id) -> pd.DataFrame: #Rubens
+    def getCulturalHeritageObjectsAuthoredBy(self, input_id) -> pd.DataFrame: #Ekaterina
         endpoint = self.blazegraph_endpoint
         id_cultural_query = f"""
         PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
