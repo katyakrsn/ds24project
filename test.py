@@ -92,7 +92,6 @@ class TestProjectBasic(unittest.TestCase):
         self.assertIsInstance(am.cleanProcessHandlers(), bool)
         self.assertTrue(am.addMetadataHandler(qm))
         self.assertTrue(am.addProcessHandler(qp))
-
         self.assertEqual(am.getEntityById("just_a_test"), None)
 
         r = am.getAllPeople()
@@ -150,16 +149,17 @@ class TestProjectBasic(unittest.TestCase):
         for i in r:
             self.assertIsInstance(i, Acquisition)
 
+        # BUG Test fails here!!!
         r = am.getActivitiesOnObjectsAuthoredBy("just_a_test")
         self.assertIsInstance(r, list)
         for i in r:
             self.assertIsInstance(i, Activity)
-
+        
         r = am.getObjectsHandledByResponsiblePerson("just_a_test")
         self.assertIsInstance(r, list)
         for i in r:
             self.assertIsInstance(i, CulturalHeritageObject)
-
+        
         r = am.getObjectsHandledByResponsibleInstitution("just_a_test")
         self.assertIsInstance(r, list)
         for i in r:
@@ -177,17 +177,17 @@ print("\n\n#####################################")
 print("## TESTING PROJECT 'impl.py' FILE: ##")
 print("#####################################\n")
 print("\n============================\n")
-print('Test 1 MetadataUploadHandler...')
+print('Test 1 MetadataUploadHandler...\n')
 testProject.test_01_MetadataUploadHandler()
 print("\n============================\n")
-print('Test 2 ProcessDataUploadHandler...')
+print('Test 2 ProcessDataUploadHandler...\n')
 testProject.test_02_ProcessDataUploadHandler()
 print("\n============================\n")
-print('Test 3 MetadataQueryHandler...')
+print('Test 3 MetadataQueryHandler...\n')
 testProject.test_03_MetadataQueryHandler()
 print("\n============================\n")
-print('Test 4 ProcessDataQueryHandler...')
+print('Test 4 ProcessDataQueryHandler...\n')
 testProject.test_04_ProcessDataQueryHandler()
 print("\n============================\n")
-print('Test 5 AdvancedMashup...')
+print('Test 5 AdvancedMashup...\n')
 testProject.test_05_AdvancedMashup()

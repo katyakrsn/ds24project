@@ -12,6 +12,9 @@ from pandas import concat
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from typing import List, Union, Optional
 
+BLAZEGRAPH_ENDPOINT = 'http://127.0.0.1:9999/blazegraph/sparql'
+CSV_FILEPATH = './data/meta.csv'
+
 # REMEMBER: before running this code, please run the Blazegraph instance!
 # 
 # Run command:
@@ -224,13 +227,17 @@ class UploadHandler(Handler):  # Ekaterina
             raise FileNotFoundError(f"File not found: {file_path}")
         # split filepath for file extension
         _, extension = os.path.splitext(file_path)
-
-        if extension == ".json":
+        if extension == ".db":
             # process json data for SQL database -> upload data to SQL Lite data base
             process_qh = ProcessDataUploadHandler()
-            result = process_qh.setDbPathOrUrl(db_file)
+            result = process_qh.setDbPathOrUrl(self.db_file)
+            
+        elif extension == ".json":
+            # process json data for SQL database -> upload data to SQL Lite data base
+            process_qh = ProcessDataUploadHandler()
+            result = process_qh.setDbPathOrUrl(self.db_file)
 
-        if extension == ".csv":
+        elif extension == ".csv":
             # process csv data & turn into RDF -> upload RDF data to blazegraph store
             metadata_qh = MetadataUploadHandler()
             result = metadata_qh.setDbPathOrUrl(blazegraph_endpoint)
@@ -559,9 +566,9 @@ class QueryHandler(Handler):
 
 
 class MetadataQueryHandler(QueryHandler):
-    def __init__(self, blazegraph_endpoint, file_path_csv):
-        self.blazegraph_endpoint = blazegraph_endpoint
-        self.csv_file_path = file_path_csv
+    def __init__(self):
+        self.blazegraph_endpoint = BLAZEGRAPH_ENDPOINT
+        self.csv_file_path = CSV_FILEPATH
 
     def getAllPeople(self) -> pd.DataFrame:  # Rubens
         sparql_query = """
@@ -925,6 +932,9 @@ class BasicMashup(object):
             print(
                 f"Name: {person.name}, Id: {person.id}, Type: {type(person).__name__}"
             )
+        if id_entity == []:
+            id_entity = None
+            
         return id_entity
 
     def getAllPeople(self) -> List[Person]:  # Ben/Rubens
@@ -1712,7 +1722,8 @@ class BasicMashup(object):
 class AdvancedMashup(BasicMashup):
     def __init__(self, metadataQuery=None, processQuery=None):
         super().__init__(metadataQuery, processQuery)
-
+        
+    # @katya this function does not work correctly
     def getActivitiesOnObjectsAuthoredBy(
         self, author_id: str
     ) -> list[Activity]:  # Rubens
@@ -1728,12 +1739,13 @@ class AdvancedMashup(BasicMashup):
         # print(all_activities)
 
         # Convert object_id column to string (if not already)
+        # @katya this seems to return an empty dataframe
         all_activities["object_id"] = all_activities["object_id"].astype(str)
         selected_rows = all_activities[
             all_activities["object_id"].isin(related_ids_str)
         ]
-
-        print(selected_rows)
+        
+        return selected_rows
 
     def getObjectsHandledByResponsiblePerson(
         self, responsible_person: str
