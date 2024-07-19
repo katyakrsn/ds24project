@@ -12,6 +12,10 @@ from pandas import concat
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from typing import List, Union, Optional
 
+# REMEMBER: before running this code, please run the Blazegraph instance!
+# 
+# Run command:
+#   `java -server -Xmx4g -jar blazegraph.jar`
 
 class IdentifiableEntity(object): #Rubens
     def __init__(self, id: str):
