@@ -37,18 +37,21 @@ class TestProjectBasic(unittest.TestCase):
     relational = "." + sep + "relational.db"
     graph = "http://127.0.0.1:9999/blazegraph/sparql"
     
+    # works
     def test_01_MetadataUploadHandler(self):
         u = MetadataUploadHandler()
         self.assertTrue(u.setDbPathOrUrl(self.graph))
         self.assertEqual(u.getDbPathOrUrl(), self.graph)
         self.assertTrue(u.pushDataToDb(self.metadata))
 
+    # works
     def test_02_ProcessDataUploadHandler(self):
         u = ProcessDataUploadHandler()
         self.assertTrue(u.setDbPathOrUrl(self.relational))
         self.assertEqual(u.getDbPathOrUrl(), self.relational)
         self.assertTrue(u.pushDataToDb(self.process))
     
+    # works
     def test_03_MetadataQueryHandler(self):
         q = MetadataQueryHandler()
         self.assertTrue(q.setDbPathOrUrl(self.graph))
@@ -165,4 +168,26 @@ class TestProjectBasic(unittest.TestCase):
         r = am.getAuthorsOfObjectsAcquiredInTimeFrame("1088-01-01", "2029-01-01")
         self.assertIsInstance(r, list)
         for i in r:
-            self.assertIsInstance(i, Person)   
+            self.assertIsInstance(i, Person)
+
+# Running tests:
+
+testProject = TestProjectBasic()
+print("\n\n#####################################")
+print("## TESTING PROJECT 'impl.py' FILE: ##")
+print("#####################################\n")
+print("\n============================\n")
+print('Test 1 MetadataUploadHandler...')
+testProject.test_01_MetadataUploadHandler()
+print("\n============================\n")
+print('Test 2 ProcessDataUploadHandler...')
+testProject.test_02_ProcessDataUploadHandler()
+print("\n============================\n")
+print('Test 3 MetadataQueryHandler...')
+testProject.test_03_MetadataQueryHandler()
+print("\n============================\n")
+print('Test 4 ProcessDataQueryHandler...')
+testProject.test_04_ProcessDataQueryHandler()
+print("\n============================\n")
+print('Test 5 AdvancedMashup...')
+testProject.test_05_AdvancedMashup()

@@ -246,157 +246,158 @@ class ProcessDataUploadHandler(UploadHandler):  # Ekaterina
         super().__init__
 
 
-file_path = "data/process.json"
+    file_path = "data/process.json"
 
-try:
-    with open(file_path) as json_file:
-        data = json.load(json_file)
-except FileNotFoundError:
-    print("Error: JSON file not found.")
-    exit()
+    try:
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+    except FileNotFoundError:
+        print("Error: JSON file not found.")
+        exit()
 
-db_file = "json.db"
+    db_file = "json.db"
 
-try:
-    conn = sqlite3.connect(db_file)
-    c = conn.cursor()
+    try:
+        conn = sqlite3.connect(db_file)
+        c = conn.cursor()
 
-    c.execute(
-        """CREATE TABLE IF NOT EXISTS Acquisition (
-                    object_id TEXT,
-                    responsible_institute TEXT,
-                    responsible_person TEXT,
-                    technique TEXT,
-                    tool TEXT,
-                    start_date TEXT,
-                    end_date TEXT
-                )"""
-    )
-
-    c.execute(
-        """CREATE TABLE IF NOT EXISTS Processing (
-                    object_id TEXT,
-                    responsible_institute TEXT,
-                    responsible_person TEXT,
-                    tool TEXT,
-                    start_date TEXT,
-                    end_date TEXT
-                )"""
-    )
-
-    c.execute(
-        """CREATE TABLE IF NOT EXISTS Modelling (
-                    object_id TEXT,
-                    responsible_institute TEXT,
-                    responsible_person TEXT,
-                    tool TEXT,
-                    start_date TEXT,
-                    end_date TEXT
-                )"""
-    )
-
-    c.execute(
-        """CREATE TABLE IF NOT EXISTS Optimising (
-                    object_id TEXT,
-                    responsible_institute TEXT,
-                    responsible_person TEXT,
-                    tool TEXT,
-                    start_date TEXT,
-                    end_date TEXT
-                )"""
-    )
-
-    c.execute(
-        """CREATE TABLE IF NOT EXISTS Exporting (
-                    object_id TEXT,
-                    responsible_institute TEXT,
-                    responsible_person TEXT,
-                    tool TEXT,
-                    start_date TEXT,
-                    end_date DATE
-                )"""
-    )
-
-    for item in data:
-        object_id = item["object id"]
-
-        acquisition = item["acquisition"]
         c.execute(
-            """INSERT INTO Acquisition (object_id, responsible_institute, responsible_person, technique, tool, start_date, end_date)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)""",
-            (
-                object_id,
-                acquisition["responsible institute"],
-                acquisition["responsible person"],
-                acquisition["technique"],
-                ", ".join(acquisition["tool"]) if acquisition["tool"] else None,
-                acquisition["start date"],
-                acquisition["end date"],
-            ),
+            """CREATE TABLE IF NOT EXISTS Acquisition (
+                        object_id TEXT,
+                        responsible_institute TEXT,
+                        responsible_person TEXT,
+                        technique TEXT,
+                        tool TEXT,
+                        start_date TEXT,
+                        end_date TEXT
+                    )"""
         )
 
-        processing = item["processing"]
         c.execute(
-            """INSERT INTO Processing (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
-                    VALUES (?, ?, ?, ?, ?, ?)""",
-            (
-                object_id,
-                processing["responsible institute"],
-                processing["responsible person"],
-                ", ".join(processing["tool"]) if processing["tool"] else None,
-                processing["start date"],
-                processing["end date"],
-            ),
+            """CREATE TABLE IF NOT EXISTS Processing (
+                        object_id TEXT,
+                        responsible_institute TEXT,
+                        responsible_person TEXT,
+                        tool TEXT,
+                        start_date TEXT,
+                        end_date TEXT
+                    )"""
         )
 
-        modelling = item["modelling"]
         c.execute(
-            """INSERT INTO Modelling (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
-                    VALUES (?, ?, ?, ?, ?, ?)""",
-            (
-                object_id,
-                modelling["responsible institute"],
-                modelling["responsible person"],
-                ", ".join(modelling["tool"]) if modelling["tool"] else None,
-                modelling["start date"],
-                modelling["end date"],
-            ),
+            """CREATE TABLE IF NOT EXISTS Modelling (
+                        object_id TEXT,
+                        responsible_institute TEXT,
+                        responsible_person TEXT,
+                        tool TEXT,
+                        start_date TEXT,
+                        end_date TEXT
+                    )"""
         )
 
-        optimising = item["optimising"]
         c.execute(
-            """INSERT INTO Optimising (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
-                    VALUES (?, ?, ?, ?, ?, ?)""",
-            (
-                object_id,
-                optimising["responsible institute"],
-                optimising["responsible person"],
-                ", ".join(optimising["tool"]) if optimising["tool"] else None,
-                optimising["start date"],
-                optimising["end date"],
-            ),
+            """CREATE TABLE IF NOT EXISTS Optimising (
+                        object_id TEXT,
+                        responsible_institute TEXT,
+                        responsible_person TEXT,
+                        tool TEXT,
+                        start_date TEXT,
+                        end_date TEXT
+                    )"""
         )
 
-        exporting = item["exporting"]
         c.execute(
-            """INSERT INTO Exporting (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
-                    VALUES (?, ?, ?, ?, ?, ?)""",
-            (
-                object_id,
-                exporting["responsible institute"],
-                exporting["responsible person"],
-                ", ".join(exporting["tool"]) if exporting["tool"] else None,
-                exporting["start date"],
-                exporting["end date"],
-            ),
+            """CREATE TABLE IF NOT EXISTS Exporting (
+                        object_id TEXT,
+                        responsible_institute TEXT,
+                        responsible_person TEXT,
+                        tool TEXT,
+                        start_date TEXT,
+                        end_date DATE
+                    )"""
         )
-    conn.commit()
 
-except sqlite3.Error as e:
-    print("\nSQLite error:", e)
-finally:
-    conn.close()
-print("\nData insertion and querying completed successfully.")
+        for item in data:
+            object_id = item["object id"]
+
+            acquisition = item["acquisition"]
+            c.execute(
+                """INSERT INTO Acquisition (object_id, responsible_institute, responsible_person, technique, tool, start_date, end_date)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    object_id,
+                    acquisition["responsible institute"],
+                    acquisition["responsible person"],
+                    acquisition["technique"],
+                    ", ".join(acquisition["tool"]) if acquisition["tool"] else None,
+                    acquisition["start date"],
+                    acquisition["end date"],
+                ),
+            )
+
+            processing = item["processing"]
+            c.execute(
+                """INSERT INTO Processing (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
+                        VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    object_id,
+                    processing["responsible institute"],
+                    processing["responsible person"],
+                    ", ".join(processing["tool"]) if processing["tool"] else None,
+                    processing["start date"],
+                    processing["end date"],
+                ),
+            )
+
+            modelling = item["modelling"]
+            c.execute(
+                """INSERT INTO Modelling (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
+                        VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    object_id,
+                    modelling["responsible institute"],
+                    modelling["responsible person"],
+                    ", ".join(modelling["tool"]) if modelling["tool"] else None,
+                    modelling["start date"],
+                    modelling["end date"],
+                ),
+            )
+
+            optimising = item["optimising"]
+            c.execute(
+                """INSERT INTO Optimising (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
+                        VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    object_id,
+                    optimising["responsible institute"],
+                    optimising["responsible person"],
+                    ", ".join(optimising["tool"]) if optimising["tool"] else None,
+                    optimising["start date"],
+                    optimising["end date"],
+                ),
+            )
+
+            exporting = item["exporting"]
+            c.execute(
+                """INSERT INTO Exporting (object_id, responsible_institute, responsible_person, tool, start_date, end_date)
+                        VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    object_id,
+                    exporting["responsible institute"],
+                    exporting["responsible person"],
+                    ", ".join(exporting["tool"]) if exporting["tool"] else None,
+                    exporting["start date"],
+                    exporting["end date"],
+                ),
+            )
+        conn.commit()
+
+    except sqlite3.Error as e:
+        print("\nSQLite error:", e)
+    finally:
+        conn.close()
+    print("\nData insertion and querying completed successfully.")
+
 
 
 class MetadataUploadHandler(UploadHandler):  # Ekaterina
@@ -532,7 +533,6 @@ class MetadataUploadHandler(UploadHandler):  # Ekaterina
     response = requests.post(sparql_endpoint, data={"query": sparql_query})
     if response.status_code != 200:
         print(f"Error: {response.status_code} - {response.reason}")
-
 
 class QueryHandler(Handler):
     def __init__(self):
